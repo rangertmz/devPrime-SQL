@@ -1,0 +1,197 @@
+.menu{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 20%;
+}
+.menu-content{
+    flex: 1;
+    
+}
+::-webkit-scrollbar-track {
+    background-color: #af0d0d; /* Cambia el color de fondo del riel del scroll */
+  }
+  
+  /* Cambiar el color del pulgar del scroll */
+  ::-webkit-scrollbar-thumb {
+    background-color: #460ac6; /* Cambia el color del pulgar del scroll */
+  }
+  
+  /* Cambiar el color del pulgar del scroll al estar en hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #ffffff; /* Cambia el color del pulgar del scroll al pasar el mouse por encima */
+  }
+  
+.logo{
+    text-align: center;
+    padding: 20px;
+    color: #ffffff;
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    font-weight: 600;
+}
+.logo-icon{
+    font-size: 2.5rem;
+    color:#af0d0d ;
+    font-weight: 600;
+    
+}
+.menu--list{
+    display: flex;
+    flex-direction: column;
+    
+}
+.item-drop{
+    font-size: 0.8rem;
+    border-radius: 10px;
+    color: #ffffff;
+    gap: 10px;
+    text-decoration: none;
+    padding: 10px;
+    display: inline-block;;
+    margin-left: 20px;
+}
+.menu--list .item{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 5px;
+    border-radius: 10px;
+    transition: 0.3s ease-in-out;
+    color: #ffffff;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    -webkit-transition: 0.3s ease-in-out;
+    -moz-transition: 0.3s ease-in-out;
+    -ms-transition: 0.3s ease-in-out;
+    -o-transition: 0.3s ease-in-out;
+}
+
+.data--list{
+    margin-left: 5px;
+    margin-top: 6px;
+}
+
+.listDB{
+  
+    cursor:pointer;
+    color: #ffffff;
+    
+    margin-bottom: 5px;
+    padding: 5px;
+    
+}
+.listDB:hover{
+    border: 1px solid #ffffff;
+    border-radius: 10px ;
+    -webkit-border-radius: 10px ;
+    -moz-border-radius: 10px ;
+    -ms-border-radius: 10px ;
+    -o-border-radius: 10px ;
+}
+.btn-reload{
+    text-align: right;
+    font-size: 25px;
+    margin-right: 10px;
+    
+    margin-left: -5px;
+    
+}
+.btn-reload .icon-refresh:hover{
+  color: gray;
+}
+
+.edit{
+    cursor:pointer;
+    
+}
+.edit:hover{
+  color:cadetblue;
+
+}
+.edit-tb{
+  cursor:pointer;
+  
+}
+
+
+
+.database-item {
+    display: flex;
+    color: #ffffff;
+    font-weight: 600;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 2px;
+}
+  
+  /* Estilo para el nombre de la base de datos */
+  .database-info {
+    margin-bottom: 5px; /* Espacio entre el nombre de la base de datos y la lista de tablas */
+  }
+  .tb-list{
+    margin-right: 61px;
+    padding: 4px;
+    cursor: pointer;
+  }
+  .tb-list:hover{
+    border: 1px solid #ffffff;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+  
+  /* Estilo para el icono de puntos */
+  .edit {
+    margin-top: -22px;
+    margin-right: 12px;
+    margin-left: auto; /* Mueve el icono de puntos a la derecha */
+  }
+  .edit-tb {
+    margin-top: -22px;
+    margin-right: 12px;
+    margin-left: auto; /* Mueve el icono de puntos a la derecha */
+   
+  }
+  .edit-tb:hover{
+    color: cadetblue;
+  }
+
+  .menu--list .disconect{
+    margin-right: 90px;
+    
+    color: #ffffff;
+    font-weight: 600;
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 4px;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+}
+
+
+  .menu--list .disconect:hover{
+    cursor: pointer;
+    background-color: #ffffff;
+    color: black;
+    
+  }
+  .icon-refresh{
+    margin-left: auto;
+    font-size: 20px;
+  }
+  .icon-refresh:hover{
+    color: cadetblue;
+    cursor: pointer;
+  }

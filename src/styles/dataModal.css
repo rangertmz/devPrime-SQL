@@ -1,0 +1,96 @@
+/* modal.css */
+
+.modalBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContainerData {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 80%;
+  width: fit-content;
+  overflow: auto;
+  max-height: 80vh;
+  text-align: center;
+  
+}
+
+.modalContainerData .modalTittle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modalContainerData .modalTittle div {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.modalContainerData .cancelBtn {
+  padding: 10px;
+  font-weight: bold;
+  color: white;
+  width: 50px;
+  height: 35px;
+  margin: 5px;
+  margin-left: auto;
+  border-radius: 6px;
+  background: #f44336;
+  border: 0;
+  transition: background-color 0.3s ease;
+}
+
+.modalContainerData .cancelBtn:hover {
+  background-color: #c0392b;
+}
+
+.modalContainerData .form-D {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modalContainerData .form-label {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.modalContainerData .form-input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modalContainerData .btn {
+  padding: 8px 20px;
+    margin: 20px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modalContainerData .btn:hover {
+  background-color: #1b2843;
+}
+
+/* Añadir separación entre el modalTittle y el cancelBtn */
+.modalContainerData .modalTittle {
+  margin-bottom: 20px;
+}
+

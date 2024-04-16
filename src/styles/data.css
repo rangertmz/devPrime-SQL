@@ -1,0 +1,47 @@
+.container-table {
+    
+    padding: 20px;
+    max-width: 900px;
+}
+  
+  .container-table h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #2e3f63; /* Color del texto */
+  }
+  
+ 
+  .container-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .container-table table th,
+  .container-table table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .container-table table th {
+    background-color: #2e3f63; /* Fondo del encabezado */
+    color: #ffffff; /* Color del texto del encabezado */
+  }
+  
+  .container-table .form table td {
+    background-color: #ffffff; /* Fondo de las celdas */
+  }
+
+  .container-table button {
+    background-color: #2e3f63; /* Color de fondo del botón */
+    color: #ffffff; /* Color del texto del botón */
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .container-table button:hover {
+    background-color: #1c293f; /* Cambio de color al pasar el cursor sobre el botón */
+  }

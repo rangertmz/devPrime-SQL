@@ -1,0 +1,26 @@
+.popup-menu{
+    z-index: 1;
+    width: 125px;
+    height: auto;
+    left: 3vh;
+    position:absolute;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: rgba(0,0,0,0.35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+}
+.popup-menu ul li{
+    list-style: none;
+    padding: 2px;
+
+}
+.popup-menu ul li:hover{
+    color: #8b8d8f;
+    cursor: pointer;
+}
