@@ -13,14 +13,20 @@ import {
 } from "../redux/reducers/getCurrentDbReducer";
 import { RotatingLines } from "react-loader-spinner";
 import { IoMdLogOut } from "react-icons/io";
-import {  useNavigate } from "react-router-dom"
-import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material"
+import { useNavigate } from "react-router-dom";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
 interface ContentHeaderProps {
   data: string;
 }
 const ContentHeader = (props: ContentHeaderProps) => {
-  const Navigator = useNavigate()
+  const Navigator = useNavigate();
   const [openModal, setopenModal] = useState(false);
   const [resultado, SetResultado] = useState("");
   const [consultResult, setConsultResult] = useState([]);
@@ -122,13 +128,12 @@ const ContentHeader = (props: ContentHeaderProps) => {
           setIcono(<GoAlert style={{ color: "red", marginRight: 10 }} />);
         }
       }
-      
     } catch (error) {
       SetResultado("Consulta ejecutada con errores");
 
       console.log(result);
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
   const ClearResult = () => {
     setConsultResult([]);
@@ -143,48 +148,66 @@ const ContentHeader = (props: ContentHeaderProps) => {
     <div className='container'>
       <div className='content'>
         <div className='content--header'>
-          <FormControl size="small" variant="standard" sx={{minWidth: 120, marginTop:-1 }}>
+          <FormControl
+            size='small'
+            variant='standard'
+            sx={{ minWidth: 120, marginTop: -1 }}
+          >
             <InputLabel>Database</InputLabel>
             <Select
-            
-            value={selectedDatabase}
-             onChange={(e) => {
-              setSelectedDatabase(e.target.value);
-              ConectDatabase(e.target.value);
-            }}
+              value={selectedDatabase}
+              onChange={(e) => {
+                setSelectedDatabase(e.target.value);
+                ConectDatabase(e.target.value);
+              }}
             >
-            {databases.map((db, index) => (
-              <MenuItem key={index} value={db.name}>
-                {db.name}
-              </MenuItem>
-            ))}
+              {databases.map((db, index) => (
+                <MenuItem key={index} value={db.name}>
+                  {db.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
-          <FormControl sx={{minWidth: 120, marginTop:-1, marginLeft:2 }} >
+          <FormControl sx={{ minWidth: 120, marginTop: -1, marginLeft: 2 }}>
             <Button
-            onClick={() => {
-              setopenModal(true);
-            }}
-            sx={{
-              backgroundColor:"#2e3f63"
-            }} variant="contained" startIcon={<FcAddDatabase/>}>Nueva DB</Button>
+              onClick={() => {
+                setopenModal(true);
+              }}
+              sx={{
+                backgroundColor: "#2e3f63",
+              }}
+              variant='contained'
+              startIcon={<FcAddDatabase />}
+            >
+              Nueva DB
+            </Button>
           </FormControl>
-          <FormControl sx={{minWidth: 120, marginTop:-1, marginLeft:2 }} >
+          <FormControl sx={{ minWidth: 120, marginTop: -1, marginLeft: 2 }}>
             <Button
-            onClick={onSubmit}
-            sx={{
-              backgroundColor:"#2e3f63"
-            }} variant="contained" startIcon={<BiPlay color='green'/>}>Ejecutar</Button>
+              onClick={onSubmit}
+              sx={{
+                backgroundColor: "#2e3f63",
+              }}
+              variant='contained'
+              startIcon={<BiPlay color='green' />}
+            >
+              Ejecutar
+            </Button>
           </FormControl>
-          <FormControl sx={{minWidth: 120, marginTop:-1, marginLeft:'auto' }} >
+          <FormControl
+            sx={{ minWidth: 120, marginTop: -1, marginLeft: "auto" }}
+          >
             <Button
-            onClick={DisconectBtn}
-            sx={{
-              backgroundColor:"#2e3f63"
-            }} variant="contained" startIcon={<IoMdLogOut />}>Cerrar Conexion</Button>
+              onClick={DisconectBtn}
+              sx={{
+                backgroundColor: "#2e3f63",
+              }}
+              variant='contained'
+              startIcon={<IoMdLogOut />}
+            >
+              Cerrar Conexion
+            </Button>
           </FormControl>
-        
-        
         </div>
         {openModal && <CreateDataBase closeModal={setopenModal} />}
 
@@ -273,14 +296,11 @@ const ContentHeader = (props: ContentHeaderProps) => {
         <hr />
         <span>
           {isLoading ? (
-            <RotatingLines
-            
-            width="20"
-          />
-          ):(
+            <RotatingLines width='20' />
+          ) : (
             <>
-            {icono}
-            {resultado}
+              {icono}
+              {resultado}
             </>
           )}
         </span>

@@ -1,23 +1,26 @@
-import React, { useState } from "react";
-import DeleteValidation from "../components/Modals/DeleteValidation";
-import { toast } from "react-toastify";
+import React from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { deleteTable } from "../request/table";
 import "../styles/modalTable.css";
-
+import Swal from "sweetalert2"
 const PopMenuTable = ({
   onClose,
   selectedDatabase,
   onUpdateDatabases,
   selectedTable,
 }: any) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const Navigator = useNavigate();
 
-  const handleDeleteClick = () => {
-    setShowDeleteModal(true);
+  const SweetAlertError = (data:any) => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: data,
+      showConfirmButton: false,
+      timer: 1500,
+    });
   };
 
   const handleDeleteTable = async () => {
@@ -25,17 +28,38 @@ const PopMenuTable = ({
       const response = await deleteTable(selectedDatabase.name, selectedTable);
       onUpdateDatabases();
       onClose();
-      toast.success("Tabla eliminada correctamente");
       console.log(response);
     } catch (e: any) {
-      toast.error(e.message);
+     SweetAlertError(e.message);
     }
   };
+  const SweetAlertDelete = () =>{
+    Swal.fire({
+      title: "¿Estas Seguro?",
+      text: "No podras revertir esto",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, Eliminar",
+      cancelButtonText:"Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDeleteTable()
+        Swal.fire({
+          title: "Eliminado!",
+          text:  `Tabla "${selectedTable}" eliminada Correctamente`,
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
+  }
 
   return (
     <div className='popup-menu'>
       <ul>
-        <li>Añadir Registro </li>
         <li
           onClick={() =>
             Navigator(
@@ -52,18 +76,9 @@ const PopMenuTable = ({
         >
           Modificar
         </li>
-        <li onClick={handleDeleteClick}>Eliminar</li>
+        <li onClick={SweetAlertDelete}>Eliminar</li>
       </ul>
-      {showDeleteModal && (
-        <DeleteValidation
-          classname='delete-modal'
-          onDeleteConfirm={handleDeleteTable}
-          DatabaseName={selectedDatabase}
-          tableName={selectedTable}
-          isDeleteTable={true}
-          onClose={() => setShowDeleteModal(false)}
-        />
-      )}
+      
     </div>
   );
 };

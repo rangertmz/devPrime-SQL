@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { deleteDatabase } from "../request/database";
-import DeleteValidation from "../components/Modals/DeleteValidation";
 import UpdateDatabase from "../components/Modals/UpdateDatabase";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import "../styles/modal.css";
+import Swal from "sweetalert2"
 
 const PopMenu = ({
   ClosePop,
@@ -13,15 +12,21 @@ const PopMenu = ({
   onUpdateDatabases,
   Conected,
 }: any) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const Navigator = useNavigate();
 
-  const handleDeleteClick = () => {
-    setShowDeleteModal(true);
-  };
+
   const handleUpdateClick = () => {
     setShowUpdateModal(true);
+  };
+  const SweetAlertError = (data:any) => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: data,
+      showConfirmButton: false,
+      timer: 1500,
+    });
   };
 
   const handleDeleteDatabase = async () => {
@@ -30,14 +35,34 @@ const PopMenu = ({
 
       onUpdateDatabases();
       ClosePop();
-      toast.success(
-        `Base de datos "${selectedDatabase.name}" eliminada Correctamente`
-      );
       console.log("Base de datos eliminada:", response);
     } catch (error: any) {
-      toast.error(error.message);
+      SweetAlertError(error.message);
     }
   };
+  const SweetAlertDelete = () =>{
+    Swal.fire({
+      title: "¿Estas Seguro?",
+      text: "No podras revertir esto",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, Eliminar",
+      cancelButtonText:"Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDeleteDatabase()
+        Swal.fire({
+          title: "Eliminado!",
+          text:  `Base de datos "${selectedDatabase.name}" eliminada Correctamente`,
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
+  }
 
   return (
     <div className='popup-menu'>
@@ -55,16 +80,8 @@ const PopMenu = ({
           Crear tabla
         </li>
         <li onClick={handleUpdateClick}>Modificar</li>
-        <li onClick={handleDeleteClick}>Eliminar</li>
+        <li onClick={SweetAlertDelete}>Eliminar</li>
       </ul>
-      {showDeleteModal && (
-        <DeleteValidation
-          classname='delete-modal'
-          onDeleteConfirm={handleDeleteDatabase}
-          DatabaseName={selectedDatabase}
-          onClose={() => setShowDeleteModal(false)}
-        />
-      )}
       {showUpdateModal && (
         <UpdateDatabase
           DatabaseName={selectedDatabase}

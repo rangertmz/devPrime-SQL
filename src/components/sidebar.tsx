@@ -5,7 +5,6 @@ import { getTables } from "../request/table";
 import { getDatabases } from "../request/database";
 import PopMenu from "../utils/PopMenu";
 import { Scrollbars } from "react-custom-scrollbars";
-import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import PopMenuTable from "../utils/PopMenuTable";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -21,7 +20,14 @@ import {
   Skeleton,
   Tooltip,
 } from "@mui/material";
-import { Dns, Folder, Home } from "@mui/icons-material";
+import {
+  Dns,
+  Folder,
+  Home,
+  ArrowDropDown,
+  ArrowRight,
+} from "@mui/icons-material";
+import Swal from "sweetalert2";
 const Sidebar = () => {
   const Navigator = useNavigate();
   const [databases, setDatabases] = useState<
@@ -60,6 +66,16 @@ const Sidebar = () => {
     };
   }, []);
 
+  const SweetAlertError = (data: any) => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: data,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
+
   const handleMenuToggle = (
     event: React.MouseEvent<HTMLSpanElement>,
     database: any
@@ -67,9 +83,9 @@ const Sidebar = () => {
     const rect = event.currentTarget.getBoundingClientRect();
     const menuHeight = 100;
     const windowHeight = window.innerHeight;
-    let menuY = rect.bottom; 
+    let menuY = rect.bottom;
     if (rect.bottom + menuHeight > windowHeight) {
-      menuY = Math.max(rect.top - menuHeight, 0); 
+      menuY = Math.max(rect.top - menuHeight, 0);
     }
 
     // Establecer la posición del menú
@@ -86,9 +102,9 @@ const Sidebar = () => {
     const rect = event.currentTarget.getBoundingClientRect();
     const menuHeight = 100;
     const windowHeight = window.innerHeight;
-    let menuY = rect.bottom; 
+    let menuY = rect.bottom;
     if (rect.bottom + menuHeight > windowHeight) {
-      menuY = Math.max(rect.top - menuHeight, 0); 
+      menuY = Math.max(rect.top - menuHeight, 0);
     }
 
     // Establecer la posición del menú
@@ -100,7 +116,7 @@ const Sidebar = () => {
 
   const loadDatabases = async () => {
     try {
-      setIsLoagind(true)
+      setIsLoagind(true);
       const data = await getDatabases();
       const databaseList = data.databases
         .map((database: any) => ({
@@ -115,12 +131,12 @@ const Sidebar = () => {
             database.name !== "msdb"
         );
       setDatabases(databaseList);
-        setIsLoagind(false)
+      setIsLoagind(false);
       const tablesPromises = data.databases.map(async (database: any) => {
         try {
-          setIsLoagindTable(true)
+          setIsLoagindTable(true);
           const tables = await getTables(database.name);
-          setIsLoagindTable(false)
+          setIsLoagindTable(false);
           return { database: database.name, tables };
         } catch (error) {
           console.error(`Error al obtener tablas de ${database.name}:`, error);
@@ -138,7 +154,9 @@ const Sidebar = () => {
       setOpenTables(tablesByDatabase);
     } catch (error) {
       console.error("Error al obtener bases de datos:", error);
-      toast.error("Ocurrió un error al cargar las bases de datos. Por favor, inténtalo de nuevo más tarde.");
+      SweetAlertError(
+        "Ocurrió un error al cargar las bases de datos. Por favor, inténtalo de nuevo más tarde."
+      );
     } finally {
     }
   };
@@ -154,7 +172,7 @@ const Sidebar = () => {
         setOpenTables({ ...openTables, [database]: tables }); // Actualiza el estado de las tablas de esta base de datos
       } catch (error) {
         console.error(`Error al obtener tablas de ${database}:`, error);
-        toast.error(
+        SweetAlertError(
           "Ocurrió un error al cargar las tablas. Por favor, inténtalo de nuevo más tarde"
         );
       }
@@ -187,24 +205,8 @@ const Sidebar = () => {
                       transition: "0.2s",
                       transform: "translateY(0) rotate(0)",
                     },
-                    "&:hover, &:focus": {
-                      bgcolor: "unset",
-                      "& svg:first-of-type": {
-                        transform: "translateY(-1px)",
-                      },
-                      "& svg:last-of-type": {
-                        right: 0,
-                        opacity: 1,
-                      },
-                    },
-                    "&::after": {
-                      content: '""',
-                      position: "absolute",
-                      height: "80%",
-                      display: "block",
-                      left: 0,
-                      width: "1px",
-                      bgcolor: "divider",
+                    "&:hover": {
+                      bgcolor: "gray",
                     },
                   }}
                 >
@@ -226,7 +228,11 @@ const Sidebar = () => {
                       sx={{ marginLeft: -2 }}
                       secondaryAction={
                         <IconButton
-                          sx={{ marginTop: -2 }}
+                          sx={{
+                            marginTop: -2,
+                            backgroundColor: "#2e3f63",
+                            "&:hover": { backgroundColor: "#1e3460" },
+                          }}
                           onClick={(event) => handleMenuToggle(event, database)}
                         >
                           <GiHamburgerMenu color='white' />
@@ -239,6 +245,13 @@ const Sidebar = () => {
                         }}
                         sx={{ marginTop: -2 }}
                       >
+                        <ListItemIcon sx={{ marginRight: -3, color: "white" }}>
+                          {openDatabases[database.name] ? (
+                            <ArrowDropDown />
+                          ) : (
+                            <ArrowRight />
+                          )}
+                        </ListItemIcon>
                         <ListItemIcon>
                           <Dns sx={{ color: "turquoise" }} />
                         </ListItemIcon>
@@ -260,6 +273,9 @@ const Sidebar = () => {
                         ) : (
                           <List component='div' disablePadding>
                             <ListItem
+                              sx={{
+                                marginLeft: -2,
+                              }}
                               secondaryAction={
                                 <IconButton
                                   sx={{ marginTop: -2 }}
@@ -341,7 +357,6 @@ const Sidebar = () => {
           </div>
         )}
       </div>
-      <ToastContainer />
     </div>
   );
 };

@@ -8,6 +8,8 @@ import { BarLoader } from "react-spinners";
 import { GoArrowLeft, GoTrash } from "react-icons/go";
 import { GrEdit } from "react-icons/gr";
 import CreateData from "./Modals/CreateData";
+import Swal from "sweetalert2";
+import { IconButton } from "@mui/material";
 
 const ContentData = () => {
   const location = useLocation();
@@ -34,21 +36,54 @@ const ContentData = () => {
     }
   };
   useEffect(() => {
+    toast.dismiss();
+
     getTableData();
   }, [selectedTable]);
+
+  const SweetAlertError = (data: any) => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: data,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
 
   const handleDeleteData = async (row: any) => {
     try {
       const result = await deleteData(selectedDatabase, selectedTable, row);
       if (result) {
-        
         setData((prevData) => prevData.filter((item) => item !== row));
-        toast.success("Dato eliminado");
       }
     } catch (error: any) {
       console.log(error);
-      toast.error(error.message);
+      SweetAlertError(error.message);
     }
+  };
+  const SweetAlertDelete = (row: any) => {
+    Swal.fire({
+      title: "¿Estas Seguro?",
+      text: "No podras revertir esto",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, Eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDeleteData(row);
+        Swal.fire({
+          title: "Eliminado!",
+          text: "Registro eliminado correctamente.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
   };
   const onSubmit = () => {
     setopenModal(true);
@@ -92,15 +127,16 @@ const ContentData = () => {
 
   return (
     <div className='container-table'>
-      <GoArrowLeft
-        style={{
-          fontWeight: 600,
-          fontSize: 25,
-          cursor: "pointer",
-        }}
-        onClick={() => Navigator("/Dashboard")}
-      />
-      <h1>
+      <IconButton onClick={() => Navigator("/Dashboard")}>
+        <GoArrowLeft
+          style={{
+            fontWeight: 600,
+            fontSize: 25,
+            cursor: "pointer",
+          }}
+        />
+      </IconButton>
+      <h1 style={{ marginTop: 5 }}>
         {selectedDatabase &&
           selectedTable &&
           selectedDatabase.charAt(0).toUpperCase() +
@@ -132,34 +168,32 @@ const ContentData = () => {
             </thead>
             <tbody>
               {Data.map((row, rowIndex) => (
-                
-                  <tr key={rowIndex}>
-                    {columns.map((column, colIndex) => (
-                      <>
-                        <td key={colIndex}>{row[column]}</td>
-                      </>
-                    ))}
-                    <td>
-                      <GrEdit
-                        title='Modificar'
-                        onClick={() => {
-                          onEditClick(row);
-                        }}
-                        style={{
-                          marginRight: "20px",
-                          color: "#2e3f63",
-                          cursor: "pointer",
-                        }}
-                      />
-                      <GoTrash
-                        title='Eliminar'
-                        color={"red"}
-                        cursor={"pointer"}
-                        onClick={() => handleDeleteData(row)}
-                      />
-                    </td>
-                  </tr>
-                
+                <tr key={rowIndex}>
+                  {columns.map((column, colIndex) => (
+                    <>
+                      <td key={colIndex}>{row[column]}</td>
+                    </>
+                  ))}
+                  <td>
+                    <GrEdit
+                      title='Modificar'
+                      onClick={() => {
+                        onEditClick(row);
+                      }}
+                      style={{
+                        marginRight: "20px",
+                        color: "#2e3f63",
+                        cursor: "pointer",
+                      }}
+                    />
+                    <GoTrash
+                      title='Eliminar'
+                      color={"red"}
+                      cursor={"pointer"}
+                      onClick={() => SweetAlertDelete(row)}
+                    />
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>

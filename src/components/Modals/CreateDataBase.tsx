@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "../../styles/modal.css";
 import { createDatabase } from "../../request/database";
-import { toast } from "react-toastify";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import {
   Button,
@@ -12,6 +11,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import Swal from "sweetalert2";
 
 function CreateDataBase({ closeModal }: any) {
   const [name, setname] = useState("");
@@ -26,32 +26,49 @@ function CreateDataBase({ closeModal }: any) {
       label: "SQL_Latin1_General_CP1_CI_AS",
     },
   ];
+
+  const SweetAlert = (data: any) => {
+    Swal.fire({
+      title: "Base de Datos Creada",
+      text: `La base de datos ${data} ha sido creada exitosamente`,
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
+  const SweetAlertError = (data: any) => {
+    Swal.fire({
+      icon: "error",
+      title: "Base de datos no Creada",
+      text: data,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (!name) {
         setErrorName(true);
-      }else{
-        setErrorName(false)
+      } else {
+        setErrorName(false);
       }
       if (!collation) {
         setErrorCollation(true);
-      }else{
-        setErrorCollation(false)
+      } else {
+        setErrorCollation(false);
       }
       if (name && collation) {
         const result = await createDatabase(name, collation);
         if (result) {
-          toast.success("Base de Datos creada exitosamente");
-          console.log(result);
+          SweetAlert(name);
           closeModal(false);
         } else {
-          toast.error(result.message);
+          SweetAlertError(result.message);
         }
       }
     } catch (error: any) {
-     
-      toast.error(error.message);
+      SweetAlertError(error.message);
       console.log(error);
     }
   };
@@ -61,25 +78,24 @@ function CreateDataBase({ closeModal }: any) {
       <div className='modalContainer'>
         <div className='modalTittle'>
           <div>Crear Base de Datos</div>
-          <IconButton onClick={() => closeModal(false)}
-          sx={{
-            marginLeft:'auto',
-            marginTop:-1,
-          }}
+          <IconButton
+            onClick={() => closeModal(false)}
+            sx={{
+              marginLeft: "auto",
+              marginTop: -1,
+            }}
           >
-          <IoCloseCircleOutline
+            <IoCloseCircleOutline
               style={{
-                color:'red',
+                color: "red",
                 fontSize: "36px",
-                
               }}
             />
           </IconButton>
-          
         </div>
-        <form className='form-CD'>
+        <form onSubmit={handleSubmit} className='form-CD'>
           <div>
-            <FormControl sx={{ marginTop: 2, width:270 }}>
+            <FormControl sx={{ marginTop: 2, width: 270 }}>
               <TextField
                 error={errorName}
                 size='small'
@@ -87,15 +103,28 @@ function CreateDataBase({ closeModal }: any) {
                 value={name}
                 onChange={(e) => setname(e.target.value)}
               ></TextField>
-              {errorName && <div style={{color:'red', fontSize:'11px', fontWeight:'lighter'}}>Por favor coloque el nombre de la base de datos</div> }
+              {errorName && (
+                <div
+                  style={{
+                    color: "red",
+                    fontSize: "11px",
+                    fontWeight: "lighter",
+                  }}
+                >
+                  Por favor coloque el nombre de la base de datos
+                </div>
+              )}
             </FormControl>
           </div>
           <div className='form-charset'>
-            <FormControl size='medium' variant='outlined' sx={{marginTop:2,width:270}}>
+            <FormControl
+              size='medium'
+              variant='outlined'
+              sx={{ marginTop: 2, width: 270 }}
+            >
               <InputLabel>Collation</InputLabel>
               <Select
-              error={errorCollation}
-              
+                error={errorCollation}
                 value={collation}
                 onChange={(e) => setCollation(e.target.value)}
               >
@@ -105,10 +134,26 @@ function CreateDataBase({ closeModal }: any) {
                   </MenuItem>
                 ))}
               </Select>
-              {errorCollation && <div style={{color:'red', fontSize:'11px', fontWeight:'lighter'}}>Por favor seleccione la collation de la base de datos</div> }
+              {errorCollation && (
+                <div
+                  style={{
+                    color: "red",
+                    fontSize: "11px",
+                    fontWeight: "lighter",
+                  }}
+                >
+                  Por favor seleccione la collation de la base de datos
+                </div>
+              )}
             </FormControl>
           </div>
-          <Button onClick={handleSubmit} variant="contained" sx={{marginTop:3, backgroundColor:'#2e3f63', color:'white'}} >Crear Base de Datos</Button>
+          <Button
+            type='submit'
+            variant='contained'
+            sx={{ marginTop: 3, backgroundColor: "#2e3f63", color: "white" }}
+          >
+            Crear Base de Datos
+          </Button>
         </form>
       </div>
     </div>

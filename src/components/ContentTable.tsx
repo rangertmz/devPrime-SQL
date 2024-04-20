@@ -4,34 +4,38 @@ import { GoArrowLeft } from "react-icons/go";
 import Scrollbars from "react-custom-scrollbars";
 import { useLocation, useNavigate } from "react-router-dom";
 import TableField from "../Interfaces/ITable";
-import { createTable, deleteColumn, getColumns, updateTable } from "../request/table";
-import { toast } from "react-toastify";
+import {
+  createTable,
+  deleteColumn,
+  getColumns,
+  updateTable,
+} from "../request/table";
 import { BarLoader } from "react-spinners";
+import Swal from "sweetalert2";
+import { IconButton } from "@mui/material";
 
 const ContentTable: React.FC = () => {
   const Navigator = useNavigate();
   const location = useLocation();
-  
   const { selectedDatabase } = location.state || {};
   const { update } = location.state || {};
   const { selectedTable } = location.state || {};
   const isUpdate = update ? "Modificar Tabla" : "Crear Tabla";
- 
-  
+
   const [isLoading, setIsLoading] = useState(update ? true : false);
 
   const initialFields: TableField[] = Array.from({ length: 1 }, () => ({
-    oldColumnName:'',
+    oldColumnName: "",
     columnName: "",
     dataType: "",
     maxLength: 0,
     isNullable: false,
     isPrimaryKey: false,
     isIdentity: false,
-    isNew:true
+    isNew: true,
   }));
   const [tableName, setTableName] = useState("");
-  
+
   const [fields, setFields] = useState<TableField[]>(initialFields);
   const dataTypes = [
     { value: "int", label: "Int" },
@@ -47,34 +51,38 @@ const ContentTable: React.FC = () => {
     setFields([
       ...fields,
       {
-        oldColumnName:'',
+        oldColumnName: "",
         columnName: "",
         dataType: "",
         maxLength: 0,
         isNullable: false,
         isPrimaryKey: false,
         isIdentity: false,
-        isNew:true,
+        isNew: true,
       },
     ]);
   };
 
-  const handleRemoveField = async(index: number, name:any) => {
+  const handleRemoveField = async (index: number, name: any) => {
     const fieldToRemove = fields[index];
-    if(fieldToRemove.isNew){
+    if (fieldToRemove.isNew) {
       const updatedFields = [...fields];
-    updatedFields.splice(index, 1);
-    setFields(updatedFields);
-    }else{
-    if(update){
-      const result = await deleteColumn(selectedDatabase, selectedTable, name)
-      if(result){
-        const updatedFields = [...fields];
       updatedFields.splice(index, 1);
       setFields(updatedFields);
+    } else {
+      if (update) {
+        const result = await deleteColumn(
+          selectedDatabase,
+          selectedTable,
+          name
+        );
+        if (result) {
+          const updatedFields = [...fields];
+          updatedFields.splice(index, 1);
+          setFields(updatedFields);
+        }
       }
     }
-  }
     const updatedFields = [...fields];
     updatedFields.splice(index, 1);
     setFields(updatedFields);
@@ -86,7 +94,7 @@ const ContentTable: React.FC = () => {
 
       if (result) {
         const columns = result || [];
-        console.log(result)
+        console.log(result);
         const modifiedColumns = columns.map((field: any) => ({
           oldColumnName: field.columnName, // Aquí asignamos el nombre antiguo a oldColumnName
           columnName: field.columnName,
@@ -97,8 +105,7 @@ const ContentTable: React.FC = () => {
           isIdentity: field.isIdentity,
         }));
         setFields(modifiedColumns);
-        
-        
+
         setIsLoading(false);
       }
     } catch (e: any) {
@@ -114,30 +121,51 @@ const ContentTable: React.FC = () => {
       setFields(initialFields);
     }
   }, [selectedTable]);
+  const SweetAlert = (data: any) => {
+    Swal.fire({
+      title: "Realizado",
+      text: data,
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
+  const SweetAlertInfo = (data: any) => {
+    Swal.fire({
+      text: data,
+      icon: "warning",
+      showConfirmButton: false,
+      timer: 2500,
+    });
+  };
+  const SweetAlertError = (data: any) => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: data,
+      showConfirmButton: false,
+      timer: 3000,
+    });
+  };
 
   const updateTableRequest = async () => {
     try {
-      
-      console.log(fields)
-        const response = await updateTable(
-          selectedDatabase,
-          selectedTable,
-          fields,
-          tableName
-        );
-        if (!response.success) {
-          // Si hay algún problema con la modificación de la columna, muestra un mensaje de error y detén el bucle
-          toast.error(response.message);
-          return;
-        }
-      
-
-      Navigator('/Dashboard');
-      setTimeout(() => {
-        toast.success("Tabla modificada correctamente");
-      }, 1000);
+      console.log(fields);
+      const response = await updateTable(
+        selectedDatabase,
+        selectedTable,
+        fields,
+        tableName
+      );
+      if (!response.success) {
+        // Si hay algún problema con la modificación de la columna, muestra un mensaje de error y detén el bucle
+        SweetAlertError(response.message);
+        return;
+      }
+      SweetAlert("Tabla modificada correctamente");
+      Navigator("/Dashboard");
     } catch (e: any) {
-      toast.error(e.message);
+      SweetAlertError(e.message);
     }
   };
 
@@ -145,43 +173,36 @@ const ContentTable: React.FC = () => {
     try {
       const response = await createTable(selectedDatabase, tableName, fields);
       if (response) {
+        SweetAlert("Tabla creada correctamente");
         Navigator(-1);
-        setTimeout(() => {
-          toast.success("Tabla creada correctamente");
-        }, 1000);
       }
     } catch (e: any) {
-      toast.error(e.message);
+      SweetAlertError(e.message);
     }
   };
   const handleSubmit = async () => {
-    
-      const hasColumnName = fields.some(
-        (field) => field.columnName.trim() !== ""
+    const hasColumnName = fields.some(
+      (field) => field.columnName.trim() !== ""
+    );
+    const hasColumnType = fields.some((field) => field.dataType.trim() !== "");
+    if (!tableName) {
+      SweetAlertInfo("Por favor coloque el nombre de la tabla");
+    }
+    if (!hasColumnName) {
+      SweetAlertInfo(
+        "Debe agregar por lo menos una columna antes de crear la tabla"
       );
-      const hasColumnType = fields.some(
-        (field) => field.dataType.trim() !== ""
-      );
-      if (!tableName) {
-        toast.info("Por favor coloque el nombre de la tabla");
+    }
+    if (!hasColumnType) {
+      SweetAlertInfo("Seleccione un tipo de campo");
+    }
+    if (tableName && hasColumnName && hasColumnType) {
+      if (update) {
+        updateTableRequest();
+      } else {
+        createTablaRequest();
       }
-      if (!hasColumnName) {
-        toast.info(
-          "Debe agregar por lo menos una columna antes de crear la tabla"
-        );
-      }
-      if (!hasColumnType) {
-        toast.info("Seleccione un tipo de campo");
-      }
-      if (tableName && hasColumnName && hasColumnType) {
-        if(update){
-          updateTableRequest()
-        }
-        else{
-          createTablaRequest();
-        }
-      }
-    
+    }
   };
   const handleIdentityChange = (index: number, checked: boolean) => {
     const updatedFields = [...fields];
@@ -216,19 +237,19 @@ const ContentTable: React.FC = () => {
   return (
     <div className='container-table'>
       <div>
-        <GoArrowLeft
-          style={{
-            fontWeight: 600,
-            fontSize: 25,
-            cursor: "pointer",
-          }}
-          onClick={() => Navigator("/Dashboard")}
-        />
-        <h1>
+        <IconButton onClick={() => Navigator("/Dashboard")}>
+          <GoArrowLeft
+            style={{
+              fontWeight: 600,
+              fontSize: 25,
+              cursor: "pointer",
+            }}
+          />
+        </IconButton>
+        <h1 style={{ marginTop: 5 }}>
           {isUpdate} en{" "}
           {selectedDatabase.charAt(0).toUpperCase() + selectedDatabase.slice(1)}
         </h1>
-        
       </div>
       <div className='form'>
         <label htmlFor='tableName'>Nombre de la Tabla:</label>
@@ -342,7 +363,7 @@ const ContentTable: React.FC = () => {
                         checked={field.isPrimaryKey}
                         disabled={update || field.isPrimaryKey}
                         onChange={(e) => {
-                          handlePrimaryKeyChange(index,e.target.checked)
+                          handlePrimaryKeyChange(index, e.target.checked);
                         }}
                       />
                     </td>
@@ -358,7 +379,11 @@ const ContentTable: React.FC = () => {
                       />
                     </td>
                     <td>
-                      <button onClick={() => handleRemoveField(index, field.columnName)}>
+                      <button
+                        onClick={() =>
+                          handleRemoveField(index, field.columnName)
+                        }
+                      >
                         Eliminar
                       </button>
                     </td>
